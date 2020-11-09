@@ -1,2 +1,2 @@
-# qr-code-killer поп
+# qr-code-killer
 
