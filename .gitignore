@@ -1,0 +1,26 @@
+# optimized
+__pycache__/
+
+# Sphinx documentation
+docs/
+
+# Test dir
+test/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# vscode settings
+.vscode/
+
+# pycharm settings
+.idea/
+
+# paint .net files
+src/assets/*.pdn
