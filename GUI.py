@@ -16,7 +16,7 @@ def Push_Button_file_dialog_funct(self):
 #    text_edit_file_dialog = QTextEdit()
 #    text_edit_file_dialog.setMinimumSize(QtCore.QSize(400, 40))
 #    self.text_edit_file_dialog = text_edit_file_dialog
-#    self.vbox.addWidget(self.text_edit_file_dialog)
+##    self.vbox.addWidget(self.text_edit_file_dialog)
 
 
 
