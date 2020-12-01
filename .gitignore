@@ -24,3 +24,6 @@ venv.bak/
 
 # paint .net files
 src/assets/*.pdn
+
+# mac special :)
+.DS_store
