@@ -1,15 +1,47 @@
 
 import math
 
+from bitstring import BitArray
 from PIL import Image, ImageDraw
 
 
-def coordinate(index, radius, num = 100) -> (int, int):
-    
-    angle = math.pi/num
-    x = math.cos(angle*index)*radius
-    y = math.sin(angle*index)*radius
-    return x, y
+def coordinator_(radius, offset_cenx=0, offset_ceny=0, *, num=360, offset_angle=0.008726, **kwargs):
+    '''Фабрика для функции считающей координаты'''
+    angle = math.pi*2/num
+
+    def coordinate(index) -> (int, int):
+        x = math.cos(angle*index+offset_angle)*radius + offset_cenx
+        y = math.sin(angle*index+offset_angle)*radius + offset_ceny
+        return x, y
+
+    return coordinate
+
+
+def get_bits_from_image(image: Image.Image, radius_1, radius_2, **kwargs) -> BitArray:
+    '''Эта функция считывает все кодированные биты с кольца на изображении
+
+    :param method:
+        :image: изображение, с которого нужно прочитать биты
+        :radius_1: радиус первого закодированного кольца
+        :radius_2: радиус второго закодированного кольца
+        :**kwargs: доп. аргументы смотрите на аргументы coordinator
+
+    :returns BitArray'''
+
+    num = 360 if not kwargs['num'] else kwargs['num']
+    offset = image.width // 2, image.height // 2
+
+    coordinate_1 = coordinator_(radius_1, *offset, **kwargs)
+    coordinate_2 = coordinator_(radius_2, *offset, **kwargs)
+
+    array_of_bit = BitArray(num * 2)
+
+    for i in range(num):
+        array_of_bit[i] = 1 if sum(pix[coordinate_1(i)]) < 50 else 0
+        array_of_bit[i + num] = 1 if sum(pix[coordinate_1(i)]) < 50 else 0
+
+    return array_of_bit
+
 
 def new_canvas():
     """Create new canvas"""
