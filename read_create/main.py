@@ -81,7 +81,79 @@ def decode_str_(encoded_text: BitArray) -> str:
 
 
 def create_coded_rings_(information: BitArray) -> Image.Image:
-    pass
+    """Функция для создания закодированного кольца
+    :param information: биты закодированного текста
+    :param img: экземпляр класса Image
+    :returns Image.Image
+    """
+    width, height = img.size
+    sectors = ImageDraw.Draw(img)
+
+    if len(information) < 121:
+    # кодирование 1 круга
+        for i in range(360):
+            if not i % 3:
+                j = i // 3
+                if j < len(information):
+                if information[j]:
+                    sectors.arc((3, 3, width - 3, height - 3), i, i + 3, fill = "black", width = 10)
+                else:
+                    sectors.arc((3, 3, width - 3, height - 3), i, i + 3, fill = "white", width = 10)
+                
+    elif 120 < len(q) < 241:
+    # кодирование 2 кругов
+
+        second = information[120:len(information)+1]
+        
+        for i in range(360):
+            if not i % 3:
+                j = i // 3
+                if information[j]:
+                    sectors.arc((3, 3, width - 3, height - 3), i, i + 3, fill = "black", width = 10)
+                else:
+                    sectors.arc((3, 3, width - 3, height - 3), i, i + 3, fill = "white", width = 10)
+
+        for i in range(360):
+            if not i % 3:
+                j = i // 3
+                if j < len(second):
+                    if second[j]:
+                        sectors.arc((13, 13, width - 13, height - 13), i, i + 3, fill = "black", width = 10)
+                    else:
+                        sectors.arc((13, 13, width - 13, height - 13), i, i + 3, fill = "white", width = 10)
+
+    elif 240 < len(q) < 361:
+    # кодирование 3 кругов
+
+        second = information[120:241]
+        third = information[240:len(information)+1]
+
+        for i in range(360):
+            if not i % 3:
+                j = i // 3
+                if information[j]:
+                    sectors.arc((3, 3, width - 3, height - 3), i, i + 3, fill = "black", width = 10)
+                else:
+                    sectors.arc((3, 3, width - 3, height - 3), i, i + 3, fill = "white", width = 10)
+
+        for i in range(360):
+            if not i % 3:
+                j = i // 3
+                if second[j]:
+                    sectors.arc((13, 13, width - 13, height - 13), i, i + 3, fill = "black", width = 10)
+                else:
+                    sectors.arc((13, 13, width - 13, height - 13), i, i + 3, fill = "white", width = 10)
+
+        for i in range(len(q)):
+            if not i % 3:
+                j = i // 3
+                if j < len(third):
+                    if third[j]:
+                        sectors.arc((23, 23, width - 23, height - 23), i, i + 3, fill = "black", width = 10)
+                    else:
+                        sectors.arc((23, 23, width - 23, height - 23), i, i + 3, fill = "white", width = 10)
+
+    return # не знаю что должен возращать
 
 
 def unite_images_(image: Image.Image, rings: Image.Image) -> Image.Image:
