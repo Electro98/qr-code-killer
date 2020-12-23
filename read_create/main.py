@@ -80,7 +80,7 @@ def decode_str_(encoded_text: BitArray) -> str:
     return decoded_text
 
 
-def create_coded_rings_(information: BitArray) -> Image.Image:
+def create_coded_rings_(information: BitArray, img) -> Image.Image:
     """Функция для создания закодированного кольца
     :param information: биты закодированного текста
     :param img: экземпляр класса Image
@@ -95,10 +95,10 @@ def create_coded_rings_(information: BitArray) -> Image.Image:
             if not i % 3:
                 j = i // 3
                 if j < len(information):
-                if information[j]:
-                    sectors.arc((3, 3, width - 3, height - 3), i, i + 3, fill = "black", width = 10)
-                else:
-                    sectors.arc((3, 3, width - 3, height - 3), i, i + 3, fill = "white", width = 10)
+                    if information[j]:
+                        sectors.arc((3, 3, width - 3, height - 3), i, i + 3, fill = "black", width = 10)
+                    else:
+                        sectors.arc((3, 3, width - 3, height - 3), i, i + 3, fill = "white", width = 10)
                 
     elif 120 < len(q) < 241:
     # кодирование 2 кругов
@@ -153,11 +153,36 @@ def create_coded_rings_(information: BitArray) -> Image.Image:
                     else:
                         sectors.arc((23, 23, width - 23, height - 23), i, i + 3, fill = "white", width = 10)
 
-    return # не знаю что должен возращать
+    img.save("coded_rings.jpg", "JPEG", quality=100)
 
 
 def unite_images_(image: Image.Image, rings: Image.Image) -> Image.Image:
-    pass
+    """Функция объединения всех частей
+    :param image: Изображение с логотипом
+    :param ring: Изображение с кольцами
+    """
+    
+    # Изображение с лого
+    img_logo = Image.open(image) 
+    width, height = img_logo.size
+    x = (width - height)//2
+    img_cropped = img_logo.crop((x, 0, x+height, height))
+    mask = Image.new("L", img_cropped.size)
+
+    mask_draw = ImageDraw.Draw(mask)
+    width, height = img_cropped.size
+    mask_draw.ellipse((36, 36, width - 36, height - 36), fill=255)
+    img_cropped.putalpha(mask) 
+
+    img_ring = Image.open(rings)
+    obj = img_cropped.load()
+
+    for x in range(width):
+        for y in range(height):
+            if obj[x, y][3] != 0:
+                img_ring.putpixel((x,y), (obj[x, y][0], obj[x, y][1], obj[x, y][2]))
+
+    img_ring.save("QRcode_killer.jpg", "JPEG", quality=100)
 
 
 def main():
