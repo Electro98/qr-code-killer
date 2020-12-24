@@ -9,8 +9,8 @@
 
 
 from PyQt5 import QtCore, QtWidgets
-from main.Decode_inf import Ui_DecodeWindow
-from main.newqr import Ui_QR
+from Decode_inf import Ui_DecodeWindow
+from newqr import Ui_QR
 
 
 class Ui_MainWindow(object):

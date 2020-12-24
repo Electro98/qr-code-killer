@@ -38,7 +38,7 @@ def get_bits_from_image_(image: Image.Image, radiuses: list, **kwargs) -> BitArr
 
     for i in range(num):
         for j in range(num_of_raduises):
-            array_of_bit[i + j * num] = 1 if sum(pix[coordinates[j](i)]) < 50 else 0
+            array_of_bit[i + j * num] = 1 if sum(pix[coordinates[j](i)]) < 120 else 0
 
     return array_of_bit
 
