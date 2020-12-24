@@ -117,7 +117,7 @@ class Ui_QR(object):
     def show_qr_pic(self):
         text = self.lineEdit.text()
         x = create_encoded_image(Image.open("picture.jpeg"), text)
-        x.save("qr_picture.jpg")
+        x.save("qr_picture.jpeg")
         self.label_2.setPixmap(QtGui.QPixmap("qr_picture.jpeg"))
         self.label_2.setScaledContents(True)
         self.label_2.setOpenExternalLinks(False)

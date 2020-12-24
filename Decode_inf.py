@@ -11,7 +11,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import (QWidget, QPushButton, QLineEdit,
                              QInputDialog, QApplication, QFileDialog, QMainWindow, QTextEdit, QAction)
 from PIL import Image
+
 from read_create.main import get_text_from_image
+from cutter.main import cut_image
 
 class Ui_DecodeWindow(object):
     def setupUi_decode(self, MainWindow):
@@ -47,13 +49,17 @@ class Ui_DecodeWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         self.action = QtWidgets.QAction(MainWindow)
         self.action.setObjectName("action")
+        self.cut = QtWidgets.QAction(MainWindow)
+        self.cut.setObjectName("cut")
         self.menu.addAction(self.action)
+        self.menu.addAction(self.cut)
         self.menubar.addAction(self.menu.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
         self.action.triggered.connect(self.openPicture)
+        self.cut.triggered.connect(self.cut_from)
         self.pushButton_2.clicked.connect(self.show_text)
 
     def retranslateUi(self, MainWindow):
@@ -64,6 +70,7 @@ class Ui_DecodeWindow(object):
         self.label_3.setText(_translate("MainWindow", "                             Место для QR изображения"))
         self.menu.setTitle(_translate("MainWindow", "Файл"))
         self.action.setText(_translate("MainWindow", "Загрузить картинку"))
+        self.cut.setText(_translate("MainWindow", "Вырезать картинку"))
 
     def openPicture(self):
         filename = QFileDialog.getOpenFileName()
@@ -78,6 +85,14 @@ class Ui_DecodeWindow(object):
         text = get_text_from_image(Image.open("qr_picture.jpg"))
         print(text)
         self.Plain_text_Edit.appendPlainText(text)
+
+    def cut_from(self):
+        filename = QFileDialog.getOpenFileName()
+        result_img = cut_image(filename[0])
+        result_img.save('qr_picture.jpg')
+        self.label_3.setPixmap(QtGui.QPixmap('qr_picture.jpg'))
+        self.label_3.setScaledContents(True)
+        self.label_3.setOpenExternalLinks(False)
 
 
 if __name__ == "__main__":
