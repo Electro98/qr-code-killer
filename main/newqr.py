@@ -12,28 +12,30 @@ from PyQt5.QtWidgets import (QWidget, QPushButton, QLineEdit,
                              QInputDialog, QApplication, QFileDialog, QMainWindow, QTextEdit, QAction)
 from PyQt5.QtGui import QIcon
 from PIL import Image
+from read_create.main import create_encoded_image
+
 
 
 class Ui_QR(object):
-    def setupUi(self, QR):
+    def setupUi_code(self, QR):
         QR.setObjectName("QR")
         QR.resize(800, 512)
-        QR.setMinimumSize(QtCore.QSize(800, 512))
-        QR.setMaximumSize(QtCore.QSize(800, 512))
+        QR.setMinimumSize(QtCore.QSize(1000, 512))
+        QR.setMaximumSize(QtCore.QSize(1000, 512))
         QR.setAccessibleName("")
         QR.setStyleSheet("selection-background-color: rgb(191, 63, 0);\n"
 "color: rgb(0, 0, 0);")
         self.centralwidget = QtWidgets.QWidget(QR)
         self.centralwidget.setObjectName("centralwidget")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(330, 220, 141, 61))
+        self.pushButton.setGeometry(QtCore.QRect(430, 220, 141, 61))
         self.pushButton.setStyleSheet("background-color: rgb(176, 173, 177);\n"
 "\n"
 "")
         self.pushButton.setObjectName("pushButton")
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit.setGeometry(QtCore.QRect(8, 20, 783, 50))
-        self.lineEdit.setMinimumSize(QtCore.QSize(783, 50))
+        self.lineEdit.setGeometry(QtCore.QRect(8, 20, 983, 50))
+        self.lineEdit.setMinimumSize(QtCore.QSize(983, 50))
         self.lineEdit.setStatusTip("")
         self.lineEdit.setAccessibleName("")
         self.lineEdit.setAutoFillBackground(False)
@@ -43,12 +45,22 @@ class Ui_QR(object):
         self.lineEdit.setCursorPosition(0)
         self.lineEdit.setCursorMoveStyle(QtCore.Qt.VisualMoveStyle)
         self.lineEdit.setObjectName("lineEdit")
+        self.frame = QtWidgets.QFrame(self.centralwidget)
+        self.frame.setGeometry(QtCore.QRect(40, 80, 381, 381))
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        self.frame2 = QtWidgets.QFrame(self.centralwidget)
+        self.frame2.setGeometry(QtCore.QRect(580, 80, 381, 381))
+        self.frame2.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame2.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame2.setObjectName("frame2")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(10, 80, 311, 381))
+        self.label.setGeometry(QtCore.QRect(40, 80, 381, 381))
         self.label.setMinimumSize(QtCore.QSize(311, 381))
         self.label.setObjectName("label_1")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(480, 80, 311, 381))
+        self.label_2.setGeometry(QtCore.QRect(580, 80, 381, 381))
         self.label_2.setMinimumSize(QtCore.QSize(311, 381))
         self.label_2.setObjectName("label_2")
         QR.setCentralWidget(self.centralwidget)
@@ -73,9 +85,10 @@ class Ui_QR(object):
         self.retranslateUi(QR)
         QtCore.QMetaObject.connectSlotsByName(QR)
 
-        self.pushButton.clicked.connect(self.importText)
+   #     self.pushButton.clicked.connect(self.importText)
         self.action.triggered.connect(self.openPicture)
-        self.actionSave_as.triggered.connect(self.openSaveAs)
+        self.pushButton.clicked.connect(self.show_qr_pic)
+        self.actionSave_as.triggered.connect(self.save_as)
 
     def retranslateUi(self, QR):
         _translate = QtCore.QCoreApplication.translate
@@ -84,18 +97,12 @@ class Ui_QR(object):
         self.lineEdit.setToolTip(_translate("QR", "<html><head/><body><p><br/></p></body></html>"))
         self.lineEdit.setWhatsThis(_translate("QR", "<html><head/><body><p>Введите текст который нужно закодировать...</p></body></html>"))
         self.lineEdit.setPlaceholderText(_translate("QR", "Введите текст для кодирвоания"))
-        self.label_2.setText(_translate("QR", " Место для QR изображения"))
-        self.label.setText(_translate("QR", "Место для изображения"))
+        self.label_2.setText(_translate("QR", "                Место для QR изображения"))
+        self.label.setText(_translate("QR", "                 Место для изображения"))
         self.menufile.setTitle(_translate("QR", "Файл"))
         self.action.setText(_translate("QR", "Загрузить картинку"))
         self.action.setIconText(_translate("QR", "Загрузить картинку"))
         self.actionSave_as.setText(_translate("QR", "Сохранить как"))
-
-    def importText(self):
-        message = self.lineEdit.text()
-        print(message)
-        self.lineEdit.clear()
-        return message
 
     def openPicture(self):
         filename = QFileDialog.getOpenFileName()
@@ -105,17 +112,25 @@ class Ui_QR(object):
         self.label.setOpenExternalLinks(False)
         self.label.setObjectName("label")
         img = Image.open(path)
-        return img
+        img.save("picture.jpeg")
 
-    def openSaveAs(self):
+    def show_qr_pic(self):
+        text = self.lineEdit.text()
+        x = create_encoded_image(Image.open("picture.jpeg"), text)
+        x.save("qr_picture.jpeg")
+        self.label_2.setPixmap(QtGui.QPixmap("qr_picture.jpeg"))
+        self.label_2.setScaledContents(True)
+        self.label_2.setOpenExternalLinks(False)
+
+    def save_as(self):
         save = QFileDialog.getSaveFileName()
         path = save[0]
         print(path)
-        try:
-            file = open(path, 'w')  # Trying to create a new file or open one
-            file.close()
-        except:
-            print('Что-то пошло не так')
+        import cv2
+        import os
+        img = cv2.imread('qr_picture.jpeg', 1)
+        cv2.imwrite(os.path.join(path), img)
+        cv2.waitKey(0)
 
 
 if __name__ == "__main__":
@@ -123,6 +138,6 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     QR = QtWidgets.QMainWindow()
     ui = Ui_QR()
-    ui.setupUi(QR)
+    ui.setupUi_code(QR)
     QR.show()
     sys.exit(app.exec_())
